@@ -7,6 +7,8 @@ class Block {
     }
 }
 
+
+
 // const Block1 = new Block({
 //     timestamp: '01/01/01', 
 //     lastHash: 'foo-lastHash',
