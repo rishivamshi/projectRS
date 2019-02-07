@@ -73,12 +73,31 @@ describe('Blockchain', () => {
 
 
     describe('replaceChain()', () => {
+
+        let errorMock, logMock;
+        beforeEach(() => {
+            errorMock = jest.fn();
+            logMock = jest.fn();
+            global.console.error = errorMock;
+            global.console.log = logMock;            
+        });
+
         describe('when the chain is not longer', () => {
-            it('doest not replace the chain', () => {
+
+            beforeEach(() => {
                 newChain.chain[0] = {new : 'chain'};
                 blockchain.replaceChain(newChain.chain);
+            });
+
+            it('doest not replace the chain', () => {
+
                 expect(blockchain.chain).toEqual(originalChain);
             });
+
+            it('logs an error', () => {
+                expect(errorMock).toHaveBeenCalled();
+            });
+
         });
         describe('when the chain is longer', () => {
             beforeEach(() => {
@@ -87,16 +106,29 @@ describe('Blockchain', () => {
                 newChain.addBlock({data: 'Battlestar'});
             });
              describe('and the chain is invalid', () => {
-                it('does not replace th chain', () => {
+                 beforeEach(() => {
                     newChain.chain[2].hash = 'fake-hash';
                     blockchain.replaceChain(newChain.chain);
+                 });
+                it('does not replace th chain', () => {
+
                 expect(blockchain.chain).toEqual(originalChain);
+                });
+                it('logs an error', () => {
+                    expect(errorMock).toHaveBeenCalled();
                 });
              });
              describe('and the chanin is valid', () => {
-                it('does replace the chain', () => {
+                 beforeEach(() => {
                     blockchain.replaceChain(newChain.chain);
+                 });
+                it('does replace the chain', () => {
+
                     expect(blockchain.chain).toEqual(newChain.chain);
+                });
+                it('logs about the chain replacement', () => {
+                    expect(logMock).toHaveBeenCalled();
+
                 });
              });
         });
