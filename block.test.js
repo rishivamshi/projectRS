@@ -72,6 +72,13 @@ describe('Block', ()=> {
         it('sets a `hash` that matches the difficulty criteria', () => {
             expect(minedBlock.hash.substring(0,minedBlock.difficulty)).toEqual('0'.repeat(minedBlock.difficulty));
         });
+
+        it('adjusts the difficulty', () => {
+            const possibleResults = [lastBlock.difficulty +1 , lastBlock.difficulty -1 ];
+
+            expect(possibleResults.includes(minedBlock.difficulty)).toBe(true);
+
+        });
     });
 
     describe('adjust difficulty', () => {
