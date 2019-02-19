@@ -6,8 +6,9 @@
   "scripts": {
     "test": "jest --watchAll",
     "start": "node index.js",
-    "dev": "npm run start-redis && nodemon index.js",
-    "start-redis": "redis-server --daemonize yes"
+    "dev": "nodemon index.js",
+    "dev-peer": "cross-env GENERATE_PEER_PORT='true' nodemon index.js"
+  
   },
   "repository": {
     "type": "git",
@@ -21,6 +22,7 @@
   },
   "homepage": "https://github.com/rishivamshi/projectRS#readme",
   "devDependencies": {
+    "cross-env": "^5.2.0",
     "jest": "^24.1.0",
     "nodemon": "^1.18.4"
   },
