@@ -69,6 +69,7 @@ class PubSub {
     }
 
     publish({ channel, message}) {
+        
         this.pubnub.publish({channel, message});
     }
     broadcastChain() {
