@@ -16,5 +16,8 @@ const GENESIS_DATA = {
     data: []
 };
 
+// its the starting balance for every node
+const STARTING_BALANCE = 1000;
 
-module.exports = {GENESIS_DATA, MINE_RATE};
+
+module.exports = {GENESIS_DATA, MINE_RATE, STARTING_BALANCE};
