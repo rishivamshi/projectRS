@@ -1,3 +1,5 @@
+// main file.
+// imports.
 const express = require('express');
 const request = require('request');
 const bodyParser = require('body-parser');
@@ -7,8 +9,9 @@ const TransactionPool = require('./wallet/transaction-pool');
 const Wallet = require('./wallet');
 const TransactionMiner = require('./app/transaction-miner');
 
-
+// starting express application
 const app = express();
+// new objects for Blockchain, transactionPool, wallet, transactionMiner and pubsub classes.
 const blockchain = new Blockchain();
 const transactionPool = new TransactionPool();
 const wallet = new Wallet();
@@ -16,6 +19,7 @@ const wallet = new Wallet();
 const pubsub = new PubSub({blockchain, transactionPool, wallet });
 const transactionMiner = new TransactionMiner({ blockchain, transactionPool, wallet, pubsub });
 
+// setting default port to 3000 and local address.
 const DEFAULT_PORT = 3000;
 const ROOT_NODE_ADDRESS = `http://localhost:${DEFAULT_PORT}`;
 
@@ -23,11 +27,13 @@ const ROOT_NODE_ADDRESS = `http://localhost:${DEFAULT_PORT}`;
 
 app.use(bodyParser.json());
 
+// get api for the entire blockchain.
 app.get('/api/blocks',(req, res) => {
     res.json(blockchain.chain);
 
 });
 
+// post api for mining the data.
 app.post('/api/mine', (req, res) => {
     const { data } = req.body;
 
@@ -38,6 +44,7 @@ app.post('/api/mine', (req, res) => {
     res.redirect('/api/blocks');
 });
 
+// post api to create a transaction from sender to reciever
 app.post('/api/transact', (req, res) => {
     const {amount, recipient} = req.body;
 
@@ -48,7 +55,11 @@ app.post('/api/transact', (req, res) => {
         if(transaction) {
             transaction.update({ senderWallet: wallet, recipient, amount });
         } else {
-            transaction = wallet.createTransaction({ recipient, amount });
+            transaction = wallet.createTransaction({ 
+                recipient, 
+                amount, 
+                chain: blockchain.chain 
+            });
 
         }
 
@@ -66,10 +77,12 @@ app.post('/api/transact', (req, res) => {
     
 });
 
+// get api for transaction pool map
 app.get('/api/transaction-pool-map', (req, res) => {
     res.json(transactionPool.transactionMap);
 });
 
+// get api for mining transactions.
 app.get('/api/mine-transactions', (req, res) => {
     transactionMiner.mineTransactions();
 
@@ -100,11 +113,14 @@ const syncWithRootState = () => {
 
 let PEER_PORT;
 
+// ports for other nodes in the system. randomly generates a port for each new node.
 if(process.env.GENERATE_PEER_PORT === 'true') {
     PEER_PORT = DEFAULT_PORT + Math.ceil(Math.random() * 1000);
 }
 
 const PORT = PEER_PORT || DEFAULT_PORT;
+
+// start server to listen to the ports.
 app.listen(PORT, () => {
     console.log(`listening at localhost:${PORT}`);
 
