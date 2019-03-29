@@ -1,8 +1,9 @@
 import React from 'react';
 import { render } from 'react-dom';
+import App from './components/App';
 
 
 render(
-    <div>Social network in React!: Live updatesssss</div>,
+    <App />,
     document.getElementById('root')
 );
